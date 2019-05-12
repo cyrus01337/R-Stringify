@@ -1,18 +1,36 @@
+local LuaKeywords = { [ "true" ] = true, [ "false" ] = true, [ "if" ] = true, [ "then" ] = true, [ "else" ] = true, [ "elseif" ] = true, [ "and" ] = true, [ "or" ] = true, [ "not" ] = true, [ "function" ] = true, [ "end" ] = true, [ "return"] = true, [ "break" ] = true, [ "nil" ] = true, [ "while" ] = true, [ "for" ] = true, [ "repeat" ] = true, [ "do" ] = true, [ "until" ] = true, [ "in" ] = true, [ "local" ] = true, [ "nil" ] = true }
+
+local DefaultOptions = {
+	
+	Space = " ",
+	
+	Tab = "	",
+	
+	NewLine = "\n",
+	
+	SecondaryNewLine = "\n",
+	
+	MaxDepth = math.huge
+	
+}
+
 function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor, NumKey )
 	
 	local First = Cyclic == nil
 	
-	Options = Options or { }
-	
-	Options.Space = Options.Space or " "
-	
-	Options.Tab = Options.Tab or "	"
-	
-	Options.NewLine = Options.NewLine or "\n"
-	
-	Options.SecondaryNewLine = Options.SecondaryNewLine or "\n"
-	
-	Options.MaxDepth = Options.MaxDepth or math.huge
+	if not Options then
+		
+		Options = DefaultOptions
+		
+	elseif not getmetatable( Options ) then
+		
+		for a, b in pairs( DefaultOptions ) do
+			
+			Options[ a ] = Options[ a ] or b
+			
+		end
+		
+	end
 	
 	Tabs = Tabs or 0
 	
@@ -28,7 +46,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		local Match = First and "^[_%a][%w_%.]*" or "^[_%a][%w_]*"
 		
-		if type( Name ) == "string" and Name:gsub( Match, "" ) == "" then
+		if type( Name ) == "string" and Name:gsub( Match, "" ) == "" and not LuaKeywords[ Name ] then
 			
 			Key[ #Key + 1 ] = Name
 			

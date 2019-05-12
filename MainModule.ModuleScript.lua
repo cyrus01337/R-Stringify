@@ -158,7 +158,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		Obj = Obj:gsub( "\n", "\\n" )
 		
-		local Start, End 
+		local Start, End
 		
 		if Obj:find( '"' ) then
 			
@@ -325,6 +325,12 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 	elseif Type == "UDim2" then
 		
 		return Name .. Type .. ".new(" .. Options.Space .. Obj.X.Scale .. "," .. Options.Space .. Obj.X.Offset .. "," .. Options.Space .. Obj.Y.Scale .. "," .. Options.Space .. Obj.Y.Offset .. Options.Space .. ")"
+	
+	elseif Type == "Region3" then
+		
+		local TopLeft, BottomRight = Obj.CFrame.p - Obj.Size / 2, Obj.CFrame.p + Obj.Size / 2
+		
+		return Name .. Type .. ".new(" .. Options.Space .. Stringify( TopLeft, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. "," .. Options.Space .. Stringify( BottomRight, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")"
 		
 	else
 		

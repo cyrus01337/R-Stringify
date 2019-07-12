@@ -136,7 +136,15 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 			
 			if not Cyc then
 				
-				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.SecondaryNewLine .. Val .. ( next( Obj, a ) ~= nil and ( "," .. Options.Space ) or "" )
+				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.SecondaryNewLine .. Val .. ( next( Obj, a ) ~= nil and ( "," .. ( Options.SecondaryNewLine == "" and Options.Space or "" ) ) or "" )
+				
+			elseif not Name then
+				
+				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.SecondaryNewLine .. '"error_cycle"' .. ( next( Obj, a ) ~= nil and ( "," .. ( Options.SecondaryNewLine == "" and Options.Space or "" ) ) or "" )
+				
+			elseif next( Obj, a ) == nil then
+				
+				Str = Str:sub( 1, -2 )
 				
 			end
 			

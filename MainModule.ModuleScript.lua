@@ -38,7 +38,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 	
 	Key = Key or { }
 	
-	for a = 1, #Key do newKey[ a ] = Key[ a ] end
+	for a, K in ipairs( Key ) do newKey[ a ] = K end
 	
 	Key = newKey
 	
@@ -328,9 +328,9 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		local Str = Name .. Type .. ".new(" .. Options.Space .. "{"
 		
-		for a = 1, #Obj.Keypoints do
+		for a, Point in ipairs( Obj.Keypoints ) do
 			
-			Str = Str .. Options.Space .. typeof( Obj.Keypoints[ a ] ) .. ".new(" .. Options.Space .. Obj.Keypoints[ a ].Time .. "," .. Options.Space .. Stringify( Obj.Keypoints[ a ].Value, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
+			Str = Str .. Options.Space .. typeof( Point ) .. ".new(" .. Options.Space .. Point.Time .. "," .. Options.Space .. Stringify( Point.Value, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
 			
 		end
 		
@@ -340,9 +340,9 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		local Str = Name .. Type .. ".new(" .. Options.Space .. "{"
 		
-		for a = 1, #Obj.Keypoints do
+		for a, Point in ipairs( Obj.Keypoints ) do
 			
-			Str = Str .. Options.Space .. typeof( Obj.Keypoints[ a ] ) .. ".new(" .. Options.Space .. Obj.Keypoints[ a ].Time .. "," .. Options.Space .. Obj.Keypoints[ a ].Value .. Options.Space .. "," .. Options.Space .. Obj.Keypoints[ a ].Envelope .. Options.Space .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
+			Str = Str .. Options.Space .. typeof( Point ) .. ".new(" .. Options.Space .. Point.Time .. "," .. Options.Space .. Point.Value .. Options.Space .. "," .. Options.Space .. Point.Envelope .. Options.Space .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
 			
 		end
 		

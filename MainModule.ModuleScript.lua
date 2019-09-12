@@ -1,3 +1,5 @@
+script.Name = "Stringify"
+
 local LuaKeywords = { [ "true" ] = true, [ "false" ] = true, [ "if" ] = true, [ "then" ] = true, [ "else" ] = true, [ "elseif" ] = true, [ "and" ] = true, [ "or" ] = true, [ "not" ] = true, [ "function" ] = true, [ "end" ] = true, [ "return"] = true, [ "break" ] = true, [ "nil" ] = true, [ "while" ] = true, [ "for" ] = true, [ "repeat" ] = true, [ "do" ] = true, [ "until" ] = true, [ "in" ] = true, [ "local" ] = true, [ "nil" ] = true }
 
 local DefaultOptions = {

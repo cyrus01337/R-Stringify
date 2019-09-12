@@ -312,7 +312,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 	elseif Type == "function" then
 		
-		return Name .. [[function ( ) error( "Can't run ToString functions" ) end]]
+		return Name .. [[function ( ) error( "Can't run Stringify functions" ) end]]
 		
 	elseif Type == "BrickColor" then
 		

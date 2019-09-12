@@ -138,11 +138,11 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 			
 			if not Cyc then
 				
-				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.SecondaryNewLine .. Val .. ( next( Obj, a ) ~= nil and ( "," .. ( Options.SecondaryNewLine == "" and Options.Space or "" ) ) or "" )
+				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.NewLine .. Val .. "," .. ( next( Obj, a ) ~= nil and ( Options.SecondaryNewLine == "" and Options.Space or "" ) or "" )
 				
 			elseif not Name then
 				
-				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.SecondaryNewLine .. '"error_cycle"' .. ( next( Obj, a ) ~= nil and ( "," .. ( Options.SecondaryNewLine == "" and Options.Space or "" ) ) or "" )
+				Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.NewLine .. '"error_cycle"' .. "," .. ( next( Obj, a ) ~= nil and ( Options.SecondaryNewLine == "" and Options.Space or "" ) or "" )
 				
 			elseif next( Obj, a ) == nil then
 				
@@ -158,7 +158,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 			
 		else
 			
-			Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs ) .. ( Options.Tab == "" and Options.Space or "" ) .. "}"
+			Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.NewLine .. Options.Tab:rep( Tabs ) .. ( Options.Tab == "" and Options.Space or "" ) .. "}"
 			
 		end
 		

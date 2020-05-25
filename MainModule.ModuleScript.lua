@@ -6,6 +6,8 @@ local DefaultOptions = {
 	
 	Space = " ",
 	
+	SecondarySpace = "",
+	
 	Tab = "	",
 	
 	NewLine = "\n",
@@ -54,11 +56,11 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 			
 		else
 			
-			Name = "[" .. Options.Space .. Stringify( Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. "]"
+			Name = "[" .. Options.SecondarySpace .. Stringify( Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. "]"
 			
 			Key[ #Key + 1 ] = Name
 			
-			if First then Name = "getfenv(" .. Options.Space .. ")" .. Name end
+			if First then Name = "getfenv(" .. Options.SecondarySpace .. ")" .. Name end
 			
 		end
 		
@@ -68,7 +70,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		if NumKey then
 			
-			Key[ #Key + 1 ] = "[" .. Options.Space .. NumKey .. Options.Space .. "]"
+			Key[ #Key + 1 ] = "[" .. Options.SecondarySpace .. NumKey .. Options.SecondarySpace .. "]"
 			
 		end
 		
@@ -106,7 +108,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		if #Key > Options.MaxDepth then
 			
-			return Options.MaxDepthReplacement or Name .. "{" .. Options.Space .. "..." .. Options.Space .. "}"
+			return Options.MaxDepthReplacement or Name .. "{" .. Options.SecondarySpace .. "..." .. Options.SecondarySpace .. "}"
 			
 		end
 		
@@ -126,7 +128,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		Cyclic[ Obj ] = Str
 		
-		Str = "{" .. ( Options.BeforeTable ~= false and Options.SecondaryNewLine == "" and Options.Space or "" )
+		Str = "{" .. ( Options.SecondaryNewLine == "" and Options.SecondarySpace or "" )
 		
 		local Num = 0
 		
@@ -154,17 +156,17 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 		if Num == 0 then
 			
-			Str = "{" .. Options.Space .. "}"
+			Str = "{" .. Options.SecondarySpace .. "}"
 			
 		else
 			
-			Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.NewLine .. Options.Tab:rep( Tabs ) .. ( Options.AfterTable ~= false and Options.Tab == "" and Options.Space or "" ) .. "}"
+			Str = Str .. Options.SecondaryNewLine .. Options.Tab:rep( Tabs + 1 ) .. Options.NewLine .. Options.Tab:rep( Tabs ) .. ( Options.Tab == "" and Options.SecondarySpace or "" ) .. "}"
 			
 		end
 		
 		if getmetatable( Obj ) then
 			
-			Str = "setmetatable(" .. Options.Space .. Str .. "," .. Options.Space .. Stringify( getmetatable( Obj ), nil, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor )
+			Str = "setmetatable(" .. Options.SecondarySpace .. Str .. "," .. Options.Space .. Stringify( getmetatable( Obj ), nil, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor )
 			
 		end
 		
@@ -234,7 +236,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 			
 			if tonumber( Str ) then
 				
-				return Name .. 'tonumber(' .. Options.Space .. '"' .. Str .. '"' .. Options.Space .. ')'
+				return Name .. 'tonumber(' .. Options.SecondarySpace .. '"' .. Str .. '"' .. Options.SecondarySpace .. ')'
 				
 			elseif Obj == math.huge then
 				
@@ -280,13 +282,13 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 				
 			elseif Par.Parent == game then
 				
-				Str = "game:GetService(" .. Options.Space .. Stringify( Par.ClassName, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")" .. Str
+				Str = "game:GetService(" .. Options.SecondarySpace .. Stringify( Par.ClassName, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. ")" .. Str
 				
 				break
 				
 			elseif WaitedFor and WaitedFor[ Par ] then
 				
-				Str = "[" .. Options.Space .. Stringify( Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. "]" .. Str
+				Str = "[" .. Options.SecondarySpace .. Stringify( Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. "]" .. Str
 				
 			else
 				
@@ -296,7 +298,7 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 					
 				end
 				 				
-				Str = ":WaitForChild(" .. Options.Space .. Stringify( Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")" .. Str
+				Str = ":WaitForChild(" .. Options.SecondarySpace .. Stringify( Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. ")" .. Str
 				
 			end
 			
@@ -320,53 +322,53 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 		
 	elseif Type == "BrickColor" then
 		
-		return Name .. Type .. ".new(" .. Options.Space .. Stringify( tostring( Obj ), nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")"
+		return Name .. Type .. ".new(" .. Options.SecondarySpace .. Stringify( tostring( Obj ), nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. ")"
 		
 	elseif Type == "Color3" then
 		
-		return Name .. Type .. ".fromRGB(" .. Options.Space .. math.floor( Obj.r * 255 + 0.5 ) .. "," .. Options.Space .. math.floor( Obj.g * 255 + 0.5 ) .. "," .. Options.Space .. math.floor( Obj.b * 255 + 0.5 ) .. Options.Space .. ")"
+		return Name .. Type .. ".fromRGB(" .. Options.SecondarySpace .. math.floor( Obj.r * 255 + 0.5 ) .. "," .. Options.Space .. math.floor( Obj.g * 255 + 0.5 ) .. "," .. Options.Space .. math.floor( Obj.b * 255 + 0.5 ) .. Options.SecondarySpace .. ")"
 		
 	elseif Type == "NumberRange" then
 		
-		return Name .. Type .. ".new(" .. Options.Space .. Obj.Min .. "," .. Options.Space .. Obj.Max .. Options.Space .. ")"
+		return Name .. Type .. ".new(" .. Options.SecondarySpace .. Obj.Min .. "," .. Options.Space .. Obj.Max .. Options.SecondarySpace .. ")"
 		
 	elseif Type == "ColorSequence" then
 		
-		local Str = Name .. Type .. ".new(" .. Options.Space .. "{"
+		local Str = Name .. Type .. ".new(" .. Options.SecondarySpace .. "{"
 		
 		for a, Point in ipairs( Obj.Keypoints ) do
 			
-			Str = Str .. Options.Space .. typeof( Point ) .. ".new(" .. Options.Space .. Point.Time .. "," .. Options.Space .. Stringify( Point.Value, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
+			Str = Str .. Options.Space .. typeof( Point ) .. ".new(" .. Options.SecondarySpace .. Point.Time .. "," .. Options.Space .. Stringify( Point.Value, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
 			
 		end
 		
-		return Str .. Options.Space .. "}" .. Options.Space .. ")"
+		return Str .. Options.SecondarySpace .. "}" .. Options.SecondarySpace .. ")"
 		
 	elseif Type == "NumberSequence" then
 		
-		local Str = Name .. Type .. ".new(" .. Options.Space .. "{"
+		local Str = Name .. Type .. ".new(" .. Options.SecondarySpace .. "{"
 		
 		for a, Point in ipairs( Obj.Keypoints ) do
 			
-			Str = Str .. Options.Space .. typeof( Point ) .. ".new(" .. Options.Space .. Point.Time .. "," .. Options.Space .. Point.Value .. Options.Space .. "," .. Options.Space .. Point.Envelope .. Options.Space .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
+			Str = Str .. Options.Space .. typeof( Point ) .. ".new(" .. Options.SecondarySpace .. Point.Time .. "," .. Options.Space .. Point.Value .. Options.Space .. "," .. Options.Space .. Point.Envelope .. Options.SecondarySpace .. ")" .. ( a ~= #Obj.Keypoints and "," or "" )
 			
 		end
 		
-		return Str .. Options.Space .. "}" .. Options.Space .. ")"
+		return Str .. Options.SecondarySpace .. "}" .. Options.SecondarySpace .. ")"
 		
 	elseif Type == "UDim2" then
 		
-		return Name .. Type .. ".new(" .. Options.Space .. Obj.X.Scale .. "," .. Options.Space .. Obj.X.Offset .. "," .. Options.Space .. Obj.Y.Scale .. "," .. Options.Space .. Obj.Y.Offset .. Options.Space .. ")"
+		return Name .. Type .. ".new(" .. Options.SecondarySpace .. Obj.X.Scale .. "," .. Options.Space .. Obj.X.Offset .. "," .. Options.Space .. Obj.Y.Scale .. "," .. Options.Space .. Obj.Y.Offset .. Options.SecondarySpace .. ")"
 	
 	elseif Type == "Region3" then
 		
 		local TopLeft, BottomRight = Obj.CFrame.p - Obj.Size / 2, Obj.CFrame.p + Obj.Size / 2
 		
-		return Name .. Type .. ".new(" .. Options.Space .. Stringify( TopLeft, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. "," .. Options.Space .. Stringify( BottomRight, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")"
+		return Name .. Type .. ".new(" .. Options.SecondarySpace .. Stringify( TopLeft, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. "," .. Options.Space .. Stringify( BottomRight, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.SecondarySpace .. ")"
 		
 	else
 		
-		return Name .. Type .. ".new(" .. Options.Space ..tostring( Obj ) .. Options.Space .. ")"
+		return Name .. Type .. ".new(" .. Options.SecondarySpace ..tostring( Obj ) .. Options.SecondarySpace .. ")"
 		
 	end
 	

@@ -284,14 +284,18 @@ function Stringify( Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor
 				
 				break
 				
-			elseif WaitedFor[ Par ] then
+			elseif WaitedFor and WaitedFor[ Par ] then
 				
 				Str = "[" .. Options.Space .. Stringify( Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. "]" .. Str
 				
 			else
 				
-				WaitedFor[ Par ] = true
-				
+				if WaitedFor then
+					
+					WaitedFor[ Par ] = true
+					
+				end
+				 				
 				Str = ":WaitForChild(" .. Options.Space .. Stringify( Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor ) .. Options.Space .. ")" .. Str
 				
 			end

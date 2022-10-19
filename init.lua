@@ -1,7 +1,7 @@
 if game:GetService("RunService"):IsRunning() then
 	script.Name = "Stringify"
 end
-	
+
 local LuaKeywords = {["true"] = true, ["false"] = true, ["if"] = true, ["then"] = true, ["else"] = true, ["elseif"] = true, ["and"] = true, ["or"] = true, ["not"] = true, ["function"] = true, ["end"] = true, ["return"] = true, ["break"] = true, ["nil"] = true, ["while"] = true, ["for"] = true, ["repeat"] = true, ["do"] = true, ["until"] = true, ["in"] = true, ["local"] = true}
 
 local DefaultOptions = {
@@ -25,10 +25,10 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 			Options[a] = Options[a] or b
 		end
 	end
-	
+
 	Tabs = Tabs or 0
 	Key = {unpack(Key or {})}
-	
+
 	if Name then
 		local Match = First and "^[_%a][%w_%.]*" or "^[_%a][%w_]*"
 		if not Options.ForceStringName and type(Name) == "string" and Name:gsub(Match, "") == "" and not LuaKeywords[Name] then
@@ -40,53 +40,53 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 				Name = "getfenv(" .. Options.SecondarySpace .. ")" .. Name
 			end
 		end
-		
+
 		Name = Options.Tab:rep(Tabs) .. Name .. Options.Space .. "=" .. Options.Space
 	else
 		if NumKey then
 			Key[#Key + 1] = "[" .. Options.SecondarySpace .. NumKey .. Options.SecondarySpace .. "]"
 		end
-		
+
 		Name = Options.Tab:rep(Tabs)
 	end
-	
+
 	if Cyclic and type(Obj) == "table" and Obj ~= {} and Cyclic[Obj] then
 		local Str = Key[1]
 		for a = 2, #Key do
 			Str = Str .. (Key[a]:sub(1, 1) == "[" and "" or ".") .. Key[a]
 		end
-		
+
 		CyclicObjs[Str] = Cyclic[Obj]
-		
+
 		return nil, true
 	end
-	
+
 	if Options.Process then
 		local Str = Options.Process(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor, NumKey)
 		if Str then
 			return Str
 		end
 	end
-	
+
 	local Type = typeof(Obj)
 	if Type == "table" then
 		if #Key > Options.MaxDepth then
 			return Options.MaxDepthReplacement or Name .. "{" .. Options.SecondarySpace .. "..." .. Options.SecondarySpace .. "}"
 		end
-		
+
 		Cyclic = Cyclic or {}
 		WaitedFor = WaitedFor or {}
 		CyclicObjs = CyclicObjs or {}
-		
+
 		local Str = Key[1]
 		for a = 2, #Key do
 			Str = Str .. (Key[a]:sub(1, 1) == "[" and "" or ".") .. Key[a]
 		end
-		
+
 		Cyclic[Obj] = Str
-		
+
 		Str = "{" .. (Options.NewLine == "" and Options.SecondaryNewLine == "" and Options.SecondarySpace or "")
-		
+
 		if Options.SortKeys then
 			local Keys = {}
 			local Num = 0
@@ -96,7 +96,7 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 					Keys[#Keys + 1] = {k, Stringify(k, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor)}
 				end
 			end
-			
+
 			table.sort(Keys, function(a, b)
 				if type(a[1]) == "number" then
 					if type(b[1]) == "number" then
@@ -110,7 +110,7 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 					return a[2] < b[2]
 				end
 			end)
-			
+
 			for k, v in ipairs(Obj) do
 				local Val, Cyc = Stringify(v, Options.ForceStringName and k or nil, Options, Tabs + 1, Cyclic, Key, CyclicObjs, WaitedFor, k)
 				if not Cyc then
@@ -121,7 +121,7 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 					Str = Str:sub(1, -2)
 				end
 			end
-			
+
 			for i, k in ipairs(Keys) do
 				local Val, Cyc = Stringify(Obj[k[1]], k[1], Options, Tabs + 1, Cyclic, Key, CyclicObjs, WaitedFor)
 				if not Cyc then
@@ -136,7 +136,7 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 			local Num = 0
 			for k, v in pairs(Obj) do
 				Num = Num + 1
-				
+
 				local Val, Cyc = Stringify(v, (Options.ForceStringName or Num ~= k) and k or nil, Options, Tabs + 1, Cyclic, Key, CyclicObjs, WaitedFor, Num == k and k or nil)
 				if not Cyc then
 					Str = Str .. Options.SecondaryNewLine .. ((Options.SecondaryNewLine == "" or Options.NewLine == "") and "" or Options.Tab:rep(Tabs + 1)) .. Options.NewLine .. Val .. ((next(Obj, k) ~= nil or Options.ForceUltimateComma) and "," or "")  .. (next(Obj, k) ~= nil and (Options.NewLine == "" and Options.SecondaryNewLine == "" and Options.Space or "") or "")
@@ -147,34 +147,34 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 				end
 			end
 		end
-		
+
 		if next(Obj) == nil then
 			Str = "{" .. Options.SecondarySpace .. "}"
 		else
 			Str = Str .. Options.SecondaryNewLine .. ((Options.SecondaryNewLine == "" or Options.NewLine == "") and "" or Options.Tab:rep(Tabs + 1)) .. Options.NewLine .. Options.Tab:rep(Tabs) .. (Options.Tab == "" and Options.SecondarySpace or "") .. "}"
 		end
-		
+
 		if getmetatable(Obj) then
 			Str = "setmetatable(" .. Options.SecondarySpace .. Str .. "," .. Options.Space .. Stringify(getmetatable(Obj), nil, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor)
 		end
-		
+
 		if First and Name ~= ("	"):rep(Tabs) then
 			for a, b in pairs(CyclicObjs) do
 				Str = Str .. Options.SecondaryNewLine .. ((Options.SecondaryNewLine == "" or Options.NewLine == "") and "" or Options.Tab:rep(Tabs + 1)) .. Options.NewLine .. Options.Tab:rep(Tabs) .. a .. Options.Space .. "=" .. Options.Space .. b
 			end
 		end
-		
+
 		return Name .. Str
 	elseif Type == "string" then
 		Obj = Obj:gsub("\\", "\\\\"):gsub("\n", "\\n")
-		
+
 		local Start, End
 		if Obj:find('"') then
 			if Obj:find("'") then
 				if Obj:find("%[%[") or Obj:find("%]%]") then
 					if Obj:find("%[%=%=%[") or Obj:find("%]%=%=%]") then
 						Obj = Obj:gsub('"', '\\"')
-						
+
 						Start, End = '"', '"'
 					else
 						Start, End = "[==[", "]==]"
@@ -188,7 +188,7 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 		else
 			Start, End = '"', '"'
 		end
-		
+
 		return Name .. Start .. Obj .. End
 	elseif Type == "number" then
 		local Str = tostring(Obj)
@@ -201,7 +201,7 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 				return Name .. "0" .. Options.Space .. "/" .. Options.Space .. "0"
 			end
 		end
-		
+
 		return Name .. Str
 	elseif Type == "boolean" then
 		return Name .. tostring(Obj)
@@ -214,15 +214,15 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 			while Par do
 				if Par == workspace then
 					Str = "workspace" .. Str
-					
+
 					break
 				elseif Par == game then
 					Str = "game" .. Str
-					
+
 					break
 				elseif Par.Parent == game then
 					Str = "game:GetService(" .. Options.SecondarySpace .. Stringify(Par.ClassName, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor) .. Options.SecondarySpace .. ")" .. Str
-					
+
 					break
 				elseif WaitedFor and WaitedFor[Par] then
 					Str = "[" .. Options.SecondarySpace .. Stringify(Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor) .. Options.SecondarySpace .. "]" .. Str
@@ -230,13 +230,13 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 					if WaitedFor then
 						WaitedFor[Par] = true
 					end
-					 				
+
 					Str = ":WaitForChild(" .. Options.SecondarySpace .. Stringify(Par.Name, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor) .. Options.SecondarySpace .. ")" .. Str
 				end
-				
+
 				Par = Par.Parent
 			end
-			
+
 			return Name .. Str
 		else
 			return ""
@@ -258,14 +258,14 @@ function Stringify(Obj, Name, Options, Tabs, Cyclic, Key, CyclicObjs, WaitedFor,
 		for a, Point in ipairs(Obj.Keypoints) do
 			Str = Str .. Options.Space .. typeof(Point) .. ".new(" .. Options.SecondarySpace .. Point.Time .. "," .. Options.Space .. Stringify(Point.Value, nil, Options, 0, Cyclic, Key, CyclicObjs, WaitedFor) .. Options.SecondarySpace .. ")" .. (a ~= #Obj.Keypoints and "," or "")
 		end
-		
+
 		return Str .. Options.SecondarySpace .. "}" .. Options.SecondarySpace .. ")"
 	elseif Type == "NumberSequence" then
 		local Str = Name .. Type .. ".new(" .. Options.SecondarySpace .. "{"
 		for a, Point in ipairs(Obj.Keypoints) do
 			Str = Str .. Options.Space .. typeof(Point) .. ".new(" .. Options.SecondarySpace .. Point.Time .. "," .. Options.Space .. Point.Value .. Options.Space .. "," .. Options.Space .. Point.Envelope .. Options.SecondarySpace .. ")" .. (a ~= #Obj.Keypoints and "," or "")
 		end
-		
+
 		return Str .. Options.SecondarySpace .. "}" .. Options.SecondarySpace .. ")"
 	elseif Type == "UDim2" then
 		return Name .. Type .. ".new(" .. Options.SecondarySpace .. Obj.X.Scale .. "," .. Options.Space .. Obj.X.Offset .. "," .. Options.Space .. Obj.Y.Scale .. "," .. Options.Space .. Obj.Y.Offset .. Options.SecondarySpace .. ")"
